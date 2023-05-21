@@ -9,10 +9,20 @@ engine = create_engine(string_conexao,
 
 
 def carrega_vagas_db():
-  # estabelecendo conexao com banco de dados
   with engine.connect() as conn:
     resultado = conn.execute(text('SELECT * FROM vagas'))
     vagas = []
     for vaga in resultado.all():
       vagas.append(vaga._asdict())
     return vagas
+
+
+def carrega_vaga_db(id):
+  with engine.connect() as conn:
+    resultado = conn.execute(text(f'SELECT * FROM vagas where id=:val'),
+                             {'val': id})
+    registro = resultado.mappings().all()
+    if len(registro) == 0:
+      return None
+    else:
+      return dict(registro[0])
